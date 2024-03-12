@@ -7,7 +7,7 @@ class BuscaminasGUI:
         self.master = master
         self.filas = 10
         self.columnas = 10
-        self.num_bombas = 5
+        self.num_bombas = 9
         self.bombas_marcadas = 0
         self.tiempo_inicio = None
         self.botones = []
@@ -32,6 +32,10 @@ class BuscaminasGUI:
                     if self.tablero[i][j] == '*':
                         self.botones[i][j].config(text='X', state='disabled', relief='sunken', bg='red')
             self.mostrar_mensaje("¡Has perdido! Una bomba ha explotado.")
+            # Deshabilitar todos los botones después de perder
+            for row in self.botones:
+                for boton in row:
+                    boton.config(state='disabled')
         else:
             num_bombas_alrededor = self.contar_bombas_alrededor(fila, columna)
             self.botones[fila][columna].config(text=str(num_bombas_alrededor), state='disabled', relief='sunken', bg='light blue')
@@ -85,11 +89,13 @@ class BuscaminasGUI:
 
     def marcar_bomba(self, event, fila, columna):
         if self.botones[fila][columna]['text'] == ' ' and self.bombas_marcadas < self.num_bombas:
-            self.botones[fila][columna].config(text='M', bg='yellow', state='disabled')
+            self.botones[fila][columna].config(text='B', bg='light green')
             self.bombas_marcadas += 1
-        elif self.botones[fila][columna]['text'] == 'M':
-            self.botones[fila][columna].config(text=' ', bg='grey', state='normal')
+            self.botones[fila][columna].config(state='disabled')  # Deshabilitar el botón marcado
+        elif self.botones[fila][columna]['text'] == 'B':
+            self.botones[fila][columna].config(text=' ', bg='grey')
             self.bombas_marcadas -= 1
+            self.botones[fila][columna].config(state='normal')  # Habilitar el botón desmarcado
 
 def main():
     root = tk.Tk()
