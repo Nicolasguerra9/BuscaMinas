@@ -29,10 +29,11 @@ class BuscaminasGUI:
             for i in range(self.filas):
                 for j in range(self.columnas):
                     if self.tablero[i][j] == '*':
-                        self.botones[i][j].config(text='X', state='disabled', relief='sunken')
+                        self.botones[i][j].config(text='X', state='disabled', relief='sunken', bg='red')
+            self.mostrar_mensaje("¡Has perdido! Una bomba ha explotado.")
         else:
             num_bombas_alrededor = self.contar_bombas_alrededor(fila, columna)
-            self.botones[fila][columna].config(text=str(num_bombas_alrededor), state='disabled', relief='sunken')
+            self.botones[fila][columna].config(text=str(num_bombas_alrededor), state='disabled', relief='sunken', bg='light green')
 
     def contar_bombas_alrededor(self, fila, columna):
         count = 0
@@ -51,7 +52,7 @@ class BuscaminasGUI:
         for i in range(self.filas):
             fila_botones = []
             for j in range(self.columnas):
-                boton = tk.Button(self.master, text=' ', width=4, height=2,
+                boton = tk.Button(self.master, text=' ', width=4, height=2, bg='grey',
                                   command=lambda f=i, c=j: self.mostrar_bomba(f, c))
                 boton.grid(row=i, column=j)
                 fila_botones.append(boton)
