@@ -7,7 +7,7 @@ class BuscaminasGUI:
         self.master = master
         self.filas = 10
         self.columnas = 10
-        self.num_bombas = 5
+        self.num_bombas = 9
         self.bombas_marcadas = 0
         self.tiempo_inicio = None
         self.tiempo_transcurrido = 0
