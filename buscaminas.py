@@ -40,9 +40,11 @@ class BuscaminasGUI:
                     boton.config(state='disabled')
         else:
             num_bombas_alrededor = self.contar_bombas_alrededor(fila, columna)
-            self.botones[fila][columna].config(text=str(num_bombas_alrededor), state='disabled', relief='sunken', bg='light blue')
             if num_bombas_alrededor == 0:
+                self.botones[fila][columna].config(state='disabled', relief='sunken', bg='light blue')
                 self.expandir_celdas(fila, columna)
+            else:
+                self.botones[fila][columna].config(text=str(num_bombas_alrededor), state='disabled', relief='sunken', bg='light blue')
             if self.verificar_victoria():
                 self.mostrar_bombas()
                 self.mostrar_mensaje("¡Has ganado!")
@@ -51,7 +53,7 @@ class BuscaminasGUI:
     def expandir_celdas(self, fila, columna):
         for i in range(max(0, fila - 1), min(self.filas, fila + 2)):
             for j in range(max(0, columna - 1), min(self.columnas, columna + 2)):
-                if self.botones[i][j]['state'] == 'normal' and self.contar_bombas_alrededor(i, j) == 0:
+                if self.botones[i][j]['state'] == 'normal':
                     self.mostrar_bomba(i, j)
 
     def contar_bombas_alrededor(self, fila, columna):
@@ -89,22 +91,22 @@ class BuscaminasGUI:
             self.iniciar_tiempo()
             for i in range(max(0, fila - 1), min(self.filas, fila + 2)):
                 for j in range(max(0, columna - 1), min(self.columnas, columna + 2)):
-                    if self.contar_bombas_alrededor(i, j) == 0:
-                        self.mostrar_bomba(i, j)
-                    else:
-                        self.mostrar_bomba(fila, columna)
+                    self.mostrar_bomba(i, j)
         else:
             self.mostrar_bomba(fila, columna)
+
+        if self.verificar_victoria():
+            self.mostrar_bombas()
+            self.mostrar_mensaje("¡Has ganado!")
+            self.detener_tiempo()
 
     def marcar_bomba(self, event, fila, columna):
         if self.botones[fila][columna]['text'] == ' ' and self.bombas_marcadas < self.num_bombas:
             self.botones[fila][columna].config(text='M', bg='yellow')
             self.bombas_marcadas += 1
-            self.botones[fila][columna].config(state='disabled')  # Deshabilitar el botón marcado
         elif self.botones[fila][columna]['text'] == 'M':
             self.botones[fila][columna].config(text=' ', bg='grey')
             self.bombas_marcadas -= 1
-            self.botones[fila][columna].config(state='normal')  # Habilitar el botón desmarcado
 
     def iniciar_tiempo(self):
         self.tiempo_inicio = time.time()
@@ -122,8 +124,12 @@ class BuscaminasGUI:
     def verificar_victoria(self):
         for i in range(self.filas):
             for j in range(self.columnas):
-                if self.tablero[i][j] == '*' and self.botones[i][j]['text'] != 'M':
-                    return False
+                if self.tablero[i][j] == '*':
+                    if self.botones[i][j]['text'] != 'M':
+                        return False
+                else:
+                    if self.botones[i][j]['text'] == 'M':
+                        return False
         return True
 
     def mostrar_bombas(self):
